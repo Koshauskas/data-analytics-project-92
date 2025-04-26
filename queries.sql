@@ -61,3 +61,62 @@ case
 	else extract(dow from s.sale_date)
 end, 
 seller
+
+--question 6
+--query1
+--this query counts the number of customers by age category
+select 
+'16-25' as age_category,
+count(customer_id) as age_count
+from customers 
+where age >= 16 and age <= 25
+union all
+select 
+'26-40' as age_category,
+count(customer_id) as age_count
+from customers 
+where age >= 26 and age <= 40
+union all
+select 
+'40+' as age_category,
+count(customer_id) as age_count
+from customers 
+where age > 40 
+
+--query2
+--this query counts the number of customers and total income by months
+select 
+to_char(s.sale_date, 'YYYY-MM') as selling_month,
+count(distinct s.customer_id) as total_customers,
+floor(sum(s.quantity * p.price)) as income
+from sales s 
+join products p 
+on s.product_id=p.product_id
+group by selling_month
+order by selling_month
+
+--query3
+with first_sales as (
+select
+--this query numbers the rows within each customer_id using row_number(), number 1 will be the first sale purchase for each customer
+s.customer_id,
+s.sale_date,
+s.sales_person_id,
+row_number() over (partition by s.customer_id order by s.sale_date asc, s.sales_id asc) as rn,
+p.price
+from sales s 
+join products p 
+on s.product_id = p.product_id 
+where p.price = 0
+)
+select 
+c.first_name || ' ' || c.last_name as customer,
+f.sale_date,
+e.first_name || ' ' || e.last_name as seller
+from first_sales f 
+join customers c 
+on f.customer_id = c.customer_id
+join employees e 
+on f.sales_person_id = e.employee_id
+where f.rn = 1
+order by c.customer_id asc
