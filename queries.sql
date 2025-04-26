@@ -1,3 +1,10 @@
+--question 4
+select 
+--calculate all customers by customer_id which is unique
+COUNT(customer_id) as customers_count 
+from customers c 
+
+--question 5
 --query1
 select 
 e.first_name || ' ' || e.last_name as seller,
