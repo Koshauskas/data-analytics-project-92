@@ -42,7 +42,7 @@ order by average_income asc;
 --query3
 select 
 e.first_name || ' ' || e.last_name as seller,
-trim(to_char(s.sale_date, 'day')) as day_of_week,
+lower(trim(to_char(s.sale_date, 'day'))) as day_of_week,
 floor(sum(s.quantity*p.price)) as income
 --this query finds revenue sorted by day of week and sellers
 from sales s 
