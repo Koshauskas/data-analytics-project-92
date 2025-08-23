@@ -33,7 +33,7 @@ INNER JOIN products AS pr
     ON sl.product_id = pr.product_id
 GROUP BY seller
 HAVING
-    avg(s.lquantity * pr.price) < (
+    AVG(s.quantity * pr.price) < (
         SELECT AVG(s.quantity * p.price)
         FROM sales AS s
         INNER JOIN products AS p
@@ -55,13 +55,13 @@ INNER JOIN products AS p
 GROUP BY
     seller, day_of_week,
     CASE
-        WHEN EXTRACT(dow FROM s.sale_date) = 0 THEN 7
-        ELSE EXTRACT(dow FROM s.sale_date)
+        WHEN EXTRACT(DOW FROM s.sale_date) = 0 THEN 7
+        ELSE EXTRACT(DOW FROM s.sale_date)
     END
 ORDER BY
     CASE
-        WHEN EXTRACT(dow FROM s.sale_date) = 0 THEN 7
-        ELSE EXTRACT(dow FROM s.sale_date)
+        WHEN EXTRACT(DOW FROM s.sale_date) = 0 THEN 7
+        ELSE EXTRACT(DOW FROM s.sale_date)
     END,
     seller;
 
@@ -108,11 +108,11 @@ WITH first_sales AS (
         s.sales_person_id,
         p.price,
         ROW_NUMBER()
-        OVER (
-            PARTITION BY s.customer_id
-            ORDER BY s.sale_date ASC, s.sales_id ASC
-        )
-            AS rn
+            OVER (
+                PARTITION BY s.customer_id
+                ORDER BY s.sale_date ASC, s.sales_id ASC
+            )
+        AS rn
     FROM sales AS s
     INNER JOIN products AS p
         ON s.product_id = p.product_id
