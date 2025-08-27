@@ -33,7 +33,7 @@ INNER JOIN products AS pr
     ON sl.product_id = pr.product_id
 GROUP BY seller
 HAVING
-    AVG(s.quantity * pr.price) < (
+    AVG(sl.quantity * pr.price) < (
         SELECT AVG(s.quantity * p.price)
         FROM sales AS s
         INNER JOIN products AS p
